@@ -10,7 +10,6 @@ namespace DataStructures.SinglyLinkedLists
     public class SinglyLinkedList<T> : ICollection<T>, IEnumerable<T>, IEnumerable, IList<T>, IReadOnlyCollection<T>, IReadOnlyList<T>
     {
         private SinglyNode<T>? head;
-        private SinglyNode<T>? tail;
         private int count;
 
         public int Count => count;
@@ -53,7 +52,6 @@ namespace DataStructures.SinglyLinkedLists
         private void ClearList()
         {
             head = null;
-            tail = null;
             count = 0;
         }
 
@@ -77,10 +75,17 @@ namespace DataStructures.SinglyLinkedLists
         public void Add(T item)
         {
             SinglyNode<T> newNode = new(item);
-            if (head is null) head = newNode;
-            else tail!.Next = newNode;
+            if (head is null) { head = newNode; }
+            else
+            {
+                SinglyNode<T> current = head;
+                while(current.Next is not null)
+                {
+                    current = current.Next;
+                }
+                current.Next = newNode;
+            }
 
-            tail = newNode;
             count++;
         }
         public void AppendFirst(T item)
@@ -90,7 +95,6 @@ namespace DataStructures.SinglyLinkedLists
                 Next = head
             };
             head = node;
-            if (Count == 0) tail = head;
             count++;
         }
         public bool Contains(T item)
@@ -118,18 +122,9 @@ namespace DataStructures.SinglyLinkedLists
             {
                 if (current.Data!.Equals(item))
                 {
-                    if (previous is not null)
-                    {
-                        previous.Next = current.Next;
+                    if (previous is not null) { previous.Next = current.Next; }
+                    else { head = head!.Next; }
 
-                        if (current.Next is null) tail = previous;
-                    }
-                    else
-                    {
-                        head = head!.Next;
-
-                        if (head is null) tail = null;
-                    }
                     count--;
                     return true;
                 }
@@ -138,7 +133,6 @@ namespace DataStructures.SinglyLinkedLists
             }
             return false;
         }
-
         public int IndexOf(T item)
         {
             SinglyLinkedList<T> list = this;
@@ -151,15 +145,54 @@ namespace DataStructures.SinglyLinkedLists
             }
             return -1;
         }
-
         public void Insert(int index, T item)
         {
-            throw new NotImplementedException();
-        }
+            if (index >= Count) throw new IndexOutOfRangeException();
 
+            SinglyNode<T>? previous = null;
+            SinglyNode<T>? current = head;
+
+            for(int i = 0; current is not null; i++)
+            {
+                if (index == i)
+                {
+                    if (previous is not null)
+                    {
+                        SinglyNode<T> newNode = new(item);
+                        newNode.Next = current;
+                        previous.Next = newNode;
+                    }
+                    else { AppendFirst(item); }
+
+                    count++;
+                    return;
+                }
+
+                previous = current;
+                current = current.Next;
+            }
+        }
         public void RemoveAt(int index)
         {
-            throw new NotImplementedException();
+            if (index >= Count) throw new IndexOutOfRangeException();
+
+            SinglyNode<T>? current = head;
+            SinglyNode<T>? previous = null;
+
+            for (int i = 0; current is not null; i++)
+            {
+                if (index == i)
+                {
+                    if (previous is not null) { previous.Next = current.Next; }
+                    else { head = head!.Next; }
+
+                    count--;
+                    return;
+                }
+
+                previous = current;
+                current = current.Next;
+            }
         }
     }
 }

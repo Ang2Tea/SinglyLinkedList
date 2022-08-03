@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataStructures.DoubleLinkedLists
 {
-    public class DoubleLinkedList<T> : ICollection<T>, IEnumerable<T>, IEnumerable, IReadOnlyCollection<T>
+    public                                                                                                                                                                                                                                                                                                                                                                                    class DoubleLinkedList<T> : ICollection<T>, IEnumerable<T>, IEnumerable, IReadOnlyCollection<T>
     {
         private DoubleNode<T>? head;
         private DoubleNode<T>? tail;
